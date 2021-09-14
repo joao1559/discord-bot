@@ -1,1 +1,4 @@
-# discord-bot
+# LoiroPVT's music bot
+
+## Language
+`Node.JS`

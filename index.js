@@ -1,5 +1,5 @@
 // Require the necessary discord.js classes
-const { Client, Intents, MessageEmbed } = require('discord.js');
+const { Client, Intents, MessageEmbed, MessageButton } = require('discord.js');
 const config = require('./config.json')
 const { Manager } = require("erela.js")
 const Spotify = require("erela.js-spotify")
@@ -74,7 +74,15 @@ app.on('messageCreate', async message => {
     let args = message.content.slice(prefix.length).trim().split(/ +/)
     let cmd = args.shift()?.toLowerCase()
 
-    if (cmd && cmd.length > 0) {
+    // Create a new player. This will return the player if it already exists.
+    const player = app.manager.create({
+        guild: message.guild.id,
+        voiceChannel: message.member.voice.channel.id,
+        textChannel: message.channel.id,
+        selfDeafen: true
+    });
+
+    if (cmd && cmd.length) {
         switch (cmd) {
             case "ping":
                 message.reply('Pinging the API...').then(msg => {
@@ -107,13 +115,6 @@ app.on('messageCreate', async message => {
                     message.author
                 );
 
-                // Create a new player. This will return the player if it already exists.
-                const player = app.manager.create({
-                    guild: message.guild.id,
-                    voiceChannel: message.member.voice.channel.id,
-                    textChannel: message.channel.id,
-                });
-
                 // Connect to the voice channel.
                 if (player.state === 'DISCONNECTED')
                     player.connect();
@@ -135,17 +136,11 @@ app.on('messageCreate', async message => {
                 )
                     player.play();
                 break
+            case "q":
             case "queue":
                 {
-                    // Create a new player. This will return the player if it already exists.
-                    const player = app.manager.create({
-                        guild: message.guild.id,
-                        voiceChannel: message.member.voice.channel.id,
-                        textChannel: message.channel.id,
-                    });
-
                     fields = player.queue.map((item, index) => {
-                        return { name: `**${index+1}.**`, value: `> *${item.title}*` }
+                        return { name: `**${index+1}.**`, value: `> *${item.title} (${item.author})*` }
                     })
 
                     const embed = new MessageEmbed()
@@ -154,13 +149,87 @@ app.on('messageCreate', async message => {
                         .setThumbnail(app.user.displayAvatarURL())
                         .setFooter(message.guild.name, message.guild.iconURL({ dynamic: true }))
                         .addFields([
-                            { name: `**Current playing:**`, value: `> *${player.queue.current.title}*\n >>${player.queue.current.displayThumbnail()}` },
+                            { name: `**Current playing:**`, value: `> *${player.queue.current.title} (${player.queue.current.author})*` },
                             ...fields
                         ])
 
                     message.reply({
                         embeds: [embed]
                     })
+                }
+                break
+            case "search":
+                {
+                    if (!args || !args.length) {
+                        message.reply('*Command **!search** needs a query*\nExample:\n *!search shake it bololo*')
+                        return
+                    }
+
+                    let search = args.join(' ')
+                    const res = await app.manager.search(
+                        search,
+                        message.author,
+                    );
+
+                    fields = res.tracks.map((item, index) => {
+                        if (index > 9) return
+                        return { name: `**${index+1}.**`, value: `> *${item.title} (${item.author})*` }
+                    }).filter(item => item)
+
+                    const embed = new MessageEmbed()
+                        .setColor("BLURPLE")
+                        .setTitle("Music queue")
+                        .setThumbnail(app.user.displayAvatarURL())
+                        .setFooter(message.guild.name, message.guild.iconURL({ dynamic: true }))
+                        .addFields(fields)
+
+                    // const embedButton = new MessageButton()
+                    // embedButton.label = 'A'
+                    // embedButton.
+
+                    message.reply({
+                        embeds: [embed]
+                    })
+
+                    const filter = m => m.author.id === message.author.id && message.content?.length
+                    const collector = message.channel.createMessageCollector({filter, max: 1})
+
+                    collector.once(`end`, (collected, reason) => {
+                        if (reason === 'limit') {
+                            let selected = res.tracks[collected.first().content - 1]
+                            player.queue.add(selected);
+                            message.channel.send(`Enqueuing track ${selected.title}.`);
+
+                            if (player.state === 'DISCONNECTED')
+                                player.connect();
+
+                            if (!player.playing && !player.paused && !player.queue.size)
+                                player.play();
+                        }
+                    })
+                }
+                break
+            case "pause":
+            case "p":
+            case "resume":
+            case "r":
+                {
+                    message.reply(`**${player.playing ? 'Paused' : 'Resumed'}!**`)
+                    player.pause(player.playing)
+                }
+                break
+            case "s":
+            case "skip":
+                {
+                    message.reply(`**Skipped!**`)
+                    player.stop()
+                }
+                break
+            case "disconnect":
+            case "quit":
+                {
+                    if (player.state === 'CONNECTED')
+                        player.destroy()
                 }
                 break
             default:

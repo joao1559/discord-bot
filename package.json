@@ -24,6 +24,8 @@
     "@discordjs/voice": "^0.6.0",
     "discord-api-types": "^0.23.1",
     "discord.js": "^13.1.0",
+    "erela.js": "^2.3.3",
+    "erela.js-spotify": "^1.2.0",
     "libsodium-wrappers": "^0.7.9",
     "ytdl-core": "^4.9.1"
   }

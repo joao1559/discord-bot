@@ -119,9 +119,18 @@ app.on('messageCreate', async message => {
                 if (player.state === 'DISCONNECTED')
                     player.connect();
 
-                // Adds the first track to the queue.
-                player.queue.add(res.tracks[0]);
-                message.channel.send(`Enqueuing track ${res.tracks[0].title}.`);
+                if (res.loadType === 'PLAYLIST_LOADED') {
+                    res.tracks.forEach(track => {
+                        player.queue.add(track);
+                    })
+
+                    message.channel.send(`Enqueuing ${res.tracks.length} tracks from ${res.playlist.name}.`);
+                }
+                else {
+                    player.queue.add(res.tracks[0]);
+                    message.channel.send(`Enqueuing track ${res.tracks[0].title}.`);
+                }
+
 
                 // Plays the player (plays the first track in the queue).
                 // The if statement is needed else it will play the current track again

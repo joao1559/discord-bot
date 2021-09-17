@@ -1,8 +1,9 @@
 // Require the necessary discord.js classes
-const { Client, Intents, MessageEmbed, MessageButton } = require('discord.js');
-const config = require('./config.json')
+require('dotenv').config()
+const { Client, Intents, MessageEmbed } = require('discord.js');
 const { Manager } = require("erela.js")
 const Spotify = require("erela.js-spotify")
+const config = JSON.parse(process.env.CONFIG_JSON)
 
 const app = new Client({
     restTimeOffset: 0,
@@ -121,7 +122,7 @@ app.on('messageCreate', async message => {
                 break
             case "play":
                 if (!args[0]) {
-                    message.reply('**!play** *needs a query!*\n\nExample:\n!play mc poze nos anos 80')
+                    message.reply(':warning: **!play** *needs a query!*\n\nExample:\n!play mc poze nos anos 80')
                     return
                 }
                 const res = await app.manager.search(
@@ -184,7 +185,7 @@ app.on('messageCreate', async message => {
             case "search":
                 {
                     if (!args || !args.length) {
-                        message.reply('*Command **!search** needs a query*\nExample:\n *!search shake it bololo*')
+                        message.reply(':warning: *Command **!search** needs a query*\nExample:\n *!search shake it bololo*')
                         return
                     }
 
@@ -262,9 +263,16 @@ app.on('messageCreate', async message => {
                     message.reply('**Queue shuffled**')
                     break
                 }
+            case "clear":
+                {
+                    player.queue.clear()
+                    message.reply(`:wastebasket: The queue is now empty`)
+                }
+                break
+        
             default:
                 {
-                    message.reply('**Unknown command**')
+                    message.reply(':x: **Unknown command**')
                 }
                 break;
         }

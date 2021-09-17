@@ -241,6 +241,13 @@ app.on('messageCreate', async message => {
                         player.destroy()
                 }
                 break
+            case "mix":
+            case "shuffle":
+                {
+                    player.queue.shuffle()
+                    message.reply('**Queue shuffled**')
+                    break
+                }
             default:
                 {
                     message.reply('**Unknown command**')

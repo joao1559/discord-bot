@@ -99,6 +99,20 @@ app.on('messageCreate', async message => {
                     .addFields([
                         { name: "**ping**", value: `> *Shows the Ping of me*`, inline: true },
                         { name: "**help**", value: `> *Gives you help*`, inline: true },
+                        { name: "**play**", value: `> *Start to play the song directly*`, inline: true },
+                        { name: "**search**", value: `> *Start to play the song, after choose it*`, inline: true },
+                        { name: "**queue**", value: `> *Show the song queue*`, inline: true },
+                        { name: "**q**", value: `> *Alias for queue*`, inline: true },
+                        { name: "**pause**", value: `> *Pause the song*`, inline: true },
+                        { name: "**p**", value: `> *Alias for pause*`, inline: true },
+                        { name: "**resume**", value: `> *Resume the song*`, inline: true },
+                        { name: "**r**", value: `> *Alias for resume*`, inline: true },
+                        { name: "**skip**", value: `> *Skip the song*`, inline: true },
+                        { name: "**s**", value: `> *Alias for skip*`, inline: true },
+                        { name: "**disconnet**", value: `> *Disconnect the DJ*`, inline: true },
+                        { name: "**quit**", value: `> *Alias for diconnect*`, inline: true },
+                        { name: "**Shuffle**", value: `> *Shuffle the queue*`, inline: true },
+                        { name: "**mix**", value: `> *Alias for shuffle*`, inline: true },
                     ])
 
                 message.reply({
@@ -256,24 +270,5 @@ app.on('messageCreate', async message => {
         }
     }
 });
-
-// app.on('interactionCreate', async interaction => {
-//     if (!interaction.isCommand()) return;
-//     console.log(app);
-
-// 	const { commandName, member, guildId, applicationId,
-//         deferred, channelId, createdTimestamp } = interaction;
-//     const { guild } = member
-//     let channel = guild.channels.cache.get(channelId)
-
-//     interaction.reply({content: 'Pinging the API...', ephemeral: true}).then(inter => {
-//         // inter.editReply({content: `> **API PING** \`${app.ws.ping}\`\n\n> **BOT PING:** \`${(Date.now() - createdTimestamp) - (2 * app.ws.ping)}\``, ephemeral: true})
-//     }).catch(console.error)
-
-// 	switch (commandName) {
-//         case 'join':
-//             interaction.member.voiceChannel.join()
-//     }
-// });
 
 app.login(config.token)

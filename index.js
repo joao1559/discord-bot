@@ -271,7 +271,10 @@ app.on('messageCreate', async message => {
 			if (player.state === 'CONNECTED')
 				player.destroy()
 		},
-		'quit': () => {},
+		'quit': () => {
+			if (player.state === 'CONNECTED')
+				player.destroy()
+		},
 		'mix': () => {
 			player.queue.shuffle()
 			message.reply('**Queue shuffled**')
@@ -282,6 +285,7 @@ app.on('messageCreate', async message => {
 		},
 		'clear': () => {
 			player.queue.clear()
+            player.stop()
 			message.reply(':wastebasket: The queue is now empty')
 		}
 	}

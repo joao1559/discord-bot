@@ -1,4 +1,3 @@
-// Require the necessary discord.js classes
 require('dotenv').config()
 const { Client, Intents, MessageEmbed } = require('discord.js')
 const { Manager } = require('erela.js')
@@ -283,6 +282,10 @@ app.on('messageCreate', async message => {
 		'clear': () => {
 			player.queue.clear()
 			message.reply(':wastebasket: The queue is now empty')
+		},
+		'loop': () => {
+			player.setQueueRepeat(true)
+			message.reply(':repeat: The queue is now on repeat mode')
 		}
 	}
 

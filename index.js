@@ -43,11 +43,6 @@ app.manager = new Manager({
 })
 	.on('nodeConnect', node => console.log(`Node ${node.options.identifier} connected`))
 	.on('nodeError', (node, error) => console.log(`Node ${node.options.identifier} had an error: ${error.message}`))
-	.on('trackStart', (player, track) => {
-		app.channels.cache
-			.get(player.textChannel)
-			.send(`Now playing: ${track.title}`)
-	})
 	.on('queueEnd', (player) => {
 		app.channels.cache
 			.get(player.textChannel)
@@ -288,7 +283,7 @@ app.on('messageCreate', async message => {
 			message.reply(':wastebasket: The queue is now empty')
 		},
 		'loop': () => {
-			player.setQueueRepeat(true)
+			player.setQueueRepeat(!player.queueRepeat)
 			message.reply(':repeat: The queue is now on repeat mode')
 		}
 	}

@@ -284,7 +284,7 @@ app.on('messageCreate', async message => {
 		},
 		'clear': () => {
 			player.queue.clear()
-            player.stop()
+			player.stop()
 			message.reply(':wastebasket: The queue is now empty')
 		},
 		'loop': () => {

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "bash ./lavalink.sh && node index.js"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
     "erela.js": "^2.3.3",
     "erela.js-spotify": "^1.2.0",
     "libsodium-wrappers": "^0.7.9",
+    "run-sh": "^1.0.3",
     "ytdl-core": "^4.9.1"
   },
   "devDependencies": {

@@ -3,16 +3,6 @@ const { Client, Intents, MessageEmbed } = require('discord.js')
 const { Manager } = require('erela.js')
 const Spotify = require('erela.js-spotify')
 const config = JSON.parse(process.env.CONFIG_JSON)
-const { exec } = require('child_process')
-
-exec('sh lavalink.sh',
-	(error, stdout, stderr) => {
-		console.log(stdout)
-		console.log(stderr)
-		if (error !== null) {
-			console.log(`exec error: ${error}`)
-		}
-	})
 
 const app = new Client({
 	restTimeOffset: 0,

@@ -32,7 +32,7 @@ app.manager = new Manager({
 		"host": process.env.LAVALINK_HOST,
 		"port": Number(process.env.lAVALINK_PORT),
 		"password": process.env.lAVALINK_PASSWORD,
-		"secure": process.env.LAVALINK_SECURE = 'true' ? true : false
+		"secure": process.env.LAVALINK_SECURE == 'true' ? true : false
 	}],
 	plugins: [
 		new Spotify({
@@ -298,4 +298,5 @@ app.on('messageCreate', async message => {
 	}
 })
 
+console.log(process.env)
 app.login(process.env.SPOTIFY_TOKEN)

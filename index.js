@@ -2,7 +2,6 @@ require('dotenv').config()
 const { Client, Intents, MessageEmbed } = require('discord.js')
 const { Manager } = require('erela.js')
 const Spotify = require('erela.js-spotify')
-const config = JSON.parse(process.env.CONFIG_JSON)
 
 const app = new Client({
 	restTimeOffset: 0,
@@ -29,11 +28,16 @@ const app = new Client({
 
 // Initiate the Manager with some options and listen to some events.
 app.manager = new Manager({
-	nodes: config.clientsettings.nodes,
+	nodes: [{
+		"host": process.env.LAVALINK_HOST,
+		"port": process.env.lAVALINK_PORT,
+		"password": process.env.lAVALINK_PASSWORD,
+		"secure": process.env.LAVALINK_SECURE
+	}],
 	plugins: [
 		new Spotify({
-			clientID: config.spotify.clientId, //get a clientid from there: https://developer.spotify.com/dashboard
-			clientSecret: config.spotify.secret
+			clientID: process.env.SPOTIFY_CLIENT_ID, //get a clientid from there: https://developer.spotify.com/dashboard
+			clientSecret: process.env.SPOTIFY_SECRET
 		})
 	],
 	send(id, payload) {
@@ -63,7 +67,7 @@ app.once('ready', () => {
 app.on('raw', (d) => app.manager.updateVoiceState(d))
 
 app.on('messageCreate', async message => {
-	const { prefix } = config
+	const prefix = process.env.PREFIX
 	if (!message.guild || message.author.bot) return
 	if (!message.content.startsWith(prefix)) return
 	let args = message.content.slice(prefix.length).trim().split(/ +/)
@@ -294,4 +298,4 @@ app.on('messageCreate', async message => {
 	}
 })
 
-app.login(config.token)
+app.login(process.env.SPOTIFY_TOKEN)

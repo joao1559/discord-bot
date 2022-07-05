@@ -30,9 +30,9 @@ const app = new Client({
 app.manager = new Manager({
 	nodes: [{
 		"host": process.env.LAVALINK_HOST,
-		"port": process.env.lAVALINK_PORT,
+		"port": Number(process.env.lAVALINK_PORT),
 		"password": process.env.lAVALINK_PASSWORD,
-		"secure": process.env.LAVALINK_SECURE
+		"secure": process.env.LAVALINK_SECURE = 'true' ? true : false
 	}],
 	plugins: [
 		new Spotify({

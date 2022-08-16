@@ -93,7 +93,7 @@ app.on('messageCreate', async message => {
 				.setTitle('Embed')
 				.setDescription(`Hello I am ${app.user.username} and I am a cool bot!\n\n**These are my Commands:**`)
 				.setThumbnail(app.user.displayAvatarURL())
-				.setFooter(message.guild.name, message.guild.iconURL({ dynamic: true }))
+				.setFooter({text: message.guild.name, iconURL: message.guild.iconURL({ dynamic: true })})
 				.addFields([
 					{ name: '**ping**', value: '> *Shows the Ping of me*', inline: true },
 					{ name: '**help**', value: '> *Gives you help*', inline: true },
@@ -160,6 +160,7 @@ app.on('messageCreate', async message => {
 		},
 		'queue': () => {
 			let fields = player.queue.map((item, index) => {
+				if (index > 49) return
 				return { name: `**${index+1}.**`, value: `> *${item.title} (${item.author})*` }
 			})
 
@@ -167,7 +168,7 @@ app.on('messageCreate', async message => {
 				.setColor('BLURPLE')
 				.setTitle('Music queue')
 				.setThumbnail(app.user.displayAvatarURL())
-				.setFooter(message.guild.name, message.guild.iconURL({ dynamic: true }))
+				.setFooter({text: message.guild.name, iconURL: message.guild.iconURL({ dynamic: true })})
 				.addFields([
 					{ name: '**Current playing:**', value: `> *${player.queue.current.title} (${player.queue.current.author})*` },
 					...fields
@@ -179,6 +180,7 @@ app.on('messageCreate', async message => {
 		},
 		'q': () => {
 			let fields = player.queue.map((item, index) => {
+				if (index > 49) return
 				return { name: `**${index+1}.**`, value: `> *${item.title} (${item.author})*` }
 			})
 
@@ -186,7 +188,7 @@ app.on('messageCreate', async message => {
 				.setColor('BLURPLE')
 				.setTitle('Music queue')
 				.setThumbnail(app.user.displayAvatarURL())
-				.setFooter(message.guild.name, message.guild.iconURL({ dynamic: true }))
+				.setFooter({text: message.guild.name, iconURL: message.guild.iconURL({ dynamic: true })})
 				.addFields([
 					{ name: '**Current playing:**', value: `> *${player.queue.current.title} (${player.queue.current.author})*` },
 					...fields
@@ -209,15 +211,16 @@ app.on('messageCreate', async message => {
 			)
 
 			let fields = res.tracks.map((item, index) => {
-				if (index > 9) return
+				// if (index > 9) return
 				return { name: `**${index+1}.**`, value: `> *${item.title} (${item.author})*` }
 			}).filter(item => item)
 
 			const embed = new MessageEmbed()
 				.setColor('BLURPLE')
 				.setTitle('Music queue')
+				.setDescription('Choose a song or cancel typing **cancel**')
 				.setThumbnail(app.user.displayAvatarURL())
-				.setFooter(message.guild.name, message.guild.iconURL({ dynamic: true }))
+				.setFooter({text: message.guild.name, iconURL: message.guild.iconURL({ dynamic: true })})
 				.addFields(fields)
 
 			message.reply({
@@ -229,6 +232,11 @@ app.on('messageCreate', async message => {
 
 			collector.once('end', (collected, reason) => {
 				if (reason === 'limit') {
+					let res = collected.first().content
+					if (res === "cancel" || parseInt(res) <= 0 || parseInt(res) > 10) {
+						message.channel.send(`:x: Search aborted`)
+						return
+					}
 					let selected = res.tracks[collected.first().content - 1]
 					player.queue.add(selected)
 					message.channel.send(`Enqueuing track ${selected.title}.`)
@@ -298,5 +306,4 @@ app.on('messageCreate', async message => {
 	}
 })
 
-console.log(process.env)
 app.login(process.env.SPOTIFY_TOKEN)

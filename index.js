@@ -211,7 +211,7 @@ app.on('messageCreate', async message => {
 			)
 
 			let fields = res.tracks.map((item, index) => {
-				// if (index > 9) return
+				if (index > 9) return
 				return { name: `**${index+1}.**`, value: `> *${item.title} (${item.author})*` }
 			}).filter(item => item)
 

@@ -29,10 +29,10 @@ const app = new Client({
 // Initiate the Manager with some options and listen to some events.
 app.manager = new Manager({
 	nodes: [{
-		"host": process.env.LAVALINK_HOST,
-		"port": Number(process.env.lAVALINK_PORT),
-		"password": process.env.lAVALINK_PASSWORD,
-		"secure": process.env.LAVALINK_SECURE == 'true' ? true : false
+		'host': process.env.LAVALINK_HOST,
+		'port': Number(process.env.lAVALINK_PORT),
+		'password': process.env.lAVALINK_PASSWORD,
+		'secure': process.env.LAVALINK_SECURE == 'true' ? true : false
 	}],
 	plugins: [
 		new Spotify({
@@ -232,12 +232,12 @@ app.on('messageCreate', async message => {
 
 			collector.once('end', (collected, reason) => {
 				if (reason === 'limit') {
-					let res = collected.first().content
-					if (res === "cancel" || parseInt(res) <= 0 || parseInt(res) > 10) {
-						message.channel.send(`:x: Search aborted`)
+					let { content }  = collected.first()
+					if (content === 'cancel' || parseInt(content) <= 0 || parseInt(content) > 10) {
+						message.channel.send(':x: Search aborted')
 						return
 					}
-					let selected = res.tracks[collected.first().content - 1]
+					let selected = res.tracks[content - 1]
 					player.queue.add(selected)
 					message.channel.send(`Enqueuing track ${selected.title}.`)
 
